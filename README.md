@@ -1,4 +1,6 @@
-# Comp
+Both Comp and ET have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.
+both Comp_ID and ET_ID are enums.
+## Comp
 ```c++
 template<Comp_ID id, typename ComponentType = typename CompInfo<id>::type>
 struct Comp
@@ -12,7 +14,7 @@ struct Comp
 	static constexpr int sortGroup = positionalArray(sortArray(), uniqueElements<noOfUniqueElements(sortArray())>(sortArray()))[id];
 };
 ```
-# ET
+## ET
 ```c++
 template<ET_ID id>
 struct ET
@@ -29,11 +31,11 @@ struct ET
 	//Sparse for getting order of components - used in ETData for ease of use
 	static constexpr std::array<int, MAX_COMP_ID> sparse = CompSparse(components);
 };
-
 ```
 # ETData
 ```c++
 #include "comp.hpp"
+
 template<ET_ID id, int compIndex = 0, int lastComp = ET<id>::noOfComponents - 1> //-1 for easier specialization
 struct ETDataTupleConstructor
 {
@@ -47,7 +49,6 @@ struct ETDataTupleConstructor<id, compIndex, compIndex>
 	using CompType = Comp<ET<id>::components[compIndex]>::type;
 	static constexpr std::tuple<CompType> data = {};
 };
-
 
 template<ET_ID id>
 struct ETData
@@ -74,9 +75,6 @@ struct ETData
 static constexpr uint32_t maxEntityType = 0xFFF;
 static constexpr uint32_t maxEntityNumber = 0xFFFFF;
 static constexpr uint32_t entityValueBits = 20;
-
-//inline uint32_t getEntityNum(uint32_t entity) { return (maxEntityNumber & entity); }
-//inline uint32_t getEntityType(uint32_t entity) { return (entity >> entityValueBits); }
 
 //options with this set up: max 1m entities, 4095 different entity types
 class Entity32Bit
@@ -115,18 +113,18 @@ public:
 	}
 };
 ```
-# Sparse Set
+# Sparse Set, sorting has been removed as it would make this post to long
 
 ```c++
 #include <vector>
 #include "Entity.hpp"
 #include "Comp.hpp"
+
 class SegSparseSet
 {
 private:
 	std::array<std::vector<Entity32Bit>, MAX_ET_ID> mEDS; //Entity Dense Set
 	std::array<std::vector<uint32_t>, MAX_ET_ID> mSparses;
-
 public:
 	inline bool entityInSet(Entity32Bit entity) noexcept { return (mSparses[entity.type()][entity.number()] != _UI32_MAX); }
 
@@ -189,7 +187,6 @@ public:
 			if (Comp<component>::compArray[i] == true)
 			{
 				resizeSparse((ET_ID)i, maxEntityAmount()[i]);
-
 			}
 		}
 	}
@@ -232,11 +229,13 @@ public:
 	TypeSortedSS() : mpSS(nullptr) {}
 };
 ```
-#EntityManager
+Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS?
+# EntityManager
 
 ```c++
 #include "ETData.hpp"
 #include "TypeSortedSS.hpp"
+
 template<int... ints>
 constexpr auto genTypesForTypeSortedTuple(std::integer_sequence<int, 0, ints...> seq)
 {
@@ -354,4 +353,5 @@ public:
 		addSegmentedSS();
 	};
 };
+Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS?
 ```
