@@ -22,7 +22,7 @@ struct Comp
 ```
 ```c++
 #include "ETInfo.hpp"
-
+#include "cosntexprUtility.hpp"
 template<ET_ID id>
 struct ET
 {
