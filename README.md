@@ -1,4 +1,4 @@
-Both <code>Comp</code> and <code>ET</code> (entity type) have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.  
+Both <code>Comp</code> and <code>ET</code> have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.  
 Both of <code>Comp_ID</code> and <code>ET_ID</code> are enums, <code>CompInfo</code> and <code>ETInfo</code> are structs containing basic informations that is used to generate <code>Comp</code> and <code>ET</code>.
 ## Comp
 ```c++
