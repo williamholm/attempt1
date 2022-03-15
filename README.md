@@ -3,9 +3,11 @@ In order to keep this shorter sorting implementation and derivation of <code>Com
 
 The three major questions I have for anyone able to review are:  
 - Is there a way to generate the tuple in <code>ETData</code> that does not require component types to be default constructable?
-- The sparse set implementation
+- How can the sparse set implementation be improved?
 - Does it make more sense to move all of <code>TypeSortedSS</code> into <code>EntityManager</code>, and replace <code>mSparses</code> with a tuple of <code>mCDS</code> instead?
 ```c++
+#include "ET.hpp"
+
 template<Comp_ID id, typename ComponentType = typename CompInfo<id>::type>
 struct Comp
 {
@@ -19,6 +21,8 @@ struct Comp
 };
 ```
 ```c++
+#include "ETInfo.hpp
+
 template<ET_ID id>
 struct ET
 {
