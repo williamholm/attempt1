@@ -14,8 +14,6 @@ struct Comp
 ```
 # ET
 ```c++
-
-
 template<ET_ID id>
 struct ET
 {
@@ -35,7 +33,7 @@ struct ET
 ```
 # ETData
 ```c++
-//move this to ET<id>, or use to replace ETData?
+#include "comp.hpp"
 template<ET_ID id, int compIndex = 0, int lastComp = ET<id>::noOfComponents - 1> //-1 for easier specialization
 struct ETDataTupleConstructor
 {
@@ -71,10 +69,57 @@ struct ETData
 	}
 };
 ```
+# Entity32Bit
+```c++
+static constexpr uint32_t maxEntityType = 0xFFF;
+static constexpr uint32_t maxEntityNumber = 0xFFFFF;
+static constexpr uint32_t entityValueBits = 20;
 
+//inline uint32_t getEntityNum(uint32_t entity) { return (maxEntityNumber & entity); }
+//inline uint32_t getEntityType(uint32_t entity) { return (entity >> entityValueBits); }
+
+//options with this set up: max 1m entities, 4095 different entity types
+class Entity32Bit
+{
+private:
+	uint32_t mEntity;
+public:
+	constexpr uint32_t number() const  noexcept
+	{
+		return mEntity & maxEntityNumber;
+	}
+	constexpr uint32_t type() const noexcept
+	{
+		return (mEntity >> entityValueBits);// &maxEntityType);
+	}
+	constexpr void addType(uint32_t type) noexcept
+	{
+		assert(type <= maxEntityType);
+		mEntity |= (type << entityValueBits);
+	}
+	constexpr void addNumber(const uint32_t entityNum) noexcept
+	{
+		assert(entityNum <= maxEntityNumber);
+		mEntity = entityNum + (this->type() << entityValueBits);
+	}
+	inline bool operator==(const Entity32Bit rhs) const noexcept
+	{
+		return this->number() == rhs.number() && this->type() == rhs.type();
+	}
+
+	Entity32Bit() noexcept :mEntity(0) {}
+	constexpr Entity32Bit(const uint32_t entityNumber, const uint32_t type) noexcept : mEntity(entityNumber)
+	{
+		assert(entityNumber < maxEntityNumber);
+		addType(type);
+	}
+};
+```
 # Sparse Set
 
 ```c++
+#include "Entity.hpp"
+#include "Comp.hpp"
 class SegSparseSet
 {
 private:
@@ -82,7 +127,6 @@ private:
 	std::array<std::vector<uint32_t>, MAX_ET_ID> mSparses;
 
 public:
-
 	inline bool entityInSet(Entity32Bit entity) noexcept { return (mSparses[entity.type()][entity.number()] != _UI32_MAX); }
 
 	inline std::vector<Entity32Bit>& getEntities(const uint32_t group) { return mEDS[group]; }
@@ -106,8 +150,7 @@ public:
 		mEDS[entity.type()].pop_back();
 		//clear entity in sparse
 		changeIndex(entity, _UI32_MAX);
-	}
-  
+	} 
 	uint32_t totalSize()
 	{
 		int size = mEDS[1].size(); //mEDS[0] is always empty
@@ -117,7 +160,6 @@ public:
 		}
 		return size;
 	}
-
 	void resizeSparse(ET_ID id, uint32_t size)
 	{
 		mSparses[id].resize(size);
@@ -125,8 +167,7 @@ public:
 		{
 			mSparses[id][i] = _UI32_MAX;
 		}
-	}
-  
+	}  
 	uint32_t size(ET_ID id)
 	{
 		return mEDS[id].size();
@@ -139,7 +180,6 @@ public:
 			resizeSparse((ET_ID)i, maxEntityAmount()[i]);
 		}
 	}
-
 	template<Comp_ID component>
 	SegSparseSet(const Comp<component>& comp) noexcept :mSparses()
 	{
@@ -194,6 +234,8 @@ public:
 #EntityManager
 
 ```c++
+#include "ETData.hpp"
+#include "TypeSortedSS.hpp"
 template<int... ints>
 constexpr auto genTypesForTypeSortedTuple(std::integer_sequence<int, 0, ints...> seq)
 {
@@ -204,7 +246,7 @@ typedef decltype(genTypesForTypeSortedTuple(std::make_integer_sequence<int, MAX_
 class EntityManager
 {
 private:
-	//size = number of sorting groups
+	//size of array == number of sorting groups
 	std::array<SegSparseSet,noOfUniqueElements(sortArray())> mSharedSSs;
 	TypeSortedSSTuple mSparses;
 	std::array<uint32_t,MAX_ET_ID> mNextEntityNum;
@@ -234,14 +276,7 @@ public:
 		addData(entity, data);
 		return entity;
 	}
-
-	template<ET_ID id>
-	void deleteEntity(Entity<id>& entity)
-	{
-		removeData<id>(entity);
-		mSharedSSs[0].deleteEntity(entity);
-		mDeletedEntityNum[id].push_back(entity.number());
-	}
+	
 	template<ET_ID id>
 	void deleteEntity(Entity32Bit entity)
 	{
@@ -279,12 +314,11 @@ private:
 			removeData<id, index - 1>(entity);
 		}
 	}
-
 public:
 	//both size functions assume at least one component of each ET is unsorted.
 	inline int size() { return mSharedSSs[0].totalSize(); }
 	inline uint32_t noOfET(ET_ID id) { return mSharedSSs[0].size(id); }
-
+	
 	//returns an iterator for dense set of the component for ET<id>
 	template<Comp_ID component>
 	inline auto begin(ET_ID id) { return std::get<component>(mSparses).begin(id); }
@@ -298,7 +332,6 @@ public:
 	inline ReturnType& getComp(Entity32Bit entity) { return std::get<component>(mSparses).getComponent(entity); }
 	template<Comp_ID component>
 	inline Entity32Bit getEntity(ET_ID id, uint32_t index) { return mSharedSSs[Comp<component>::sortGroup].getEntity(id, index); }
-
 private:
 	template<int index = 1>
 	void addSegmentedSS()
@@ -319,6 +352,5 @@ public:
 		}
 		addSegmentedSS();
 	};
-
 };
 ```
