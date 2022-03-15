@@ -1,5 +1,5 @@
-Both Comp and ET (entity type) have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.
-Both of Comp_ID and ET_ID are enums, CompInfo and ETInfo are structs containing basic informations that is used to generate Comp and ET.
+Both Comp and ET (entity type) have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.  
+Both of Comp_ID and ET_ID are enums, CompInfo and ETInfo are structs containing basic informations that is used to generate <code>Comp</code> and ET.
 ## Comp
 ```c++
 template<Comp_ID id, typename ComponentType = typename CompInfo<id>::type>
