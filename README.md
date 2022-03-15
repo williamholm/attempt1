@@ -1,4 +1,5 @@
-Below is the core of an entity component system I am working on to improve my c++, the full project can be seen here: https://github.com/williamholm/IBECS. In order to keep this shorter sorting implementation and derivation of <code>Comp</code> and <code>ET</code> has been left out.  
+Below is the core of an entity component system I am working on to improve my c++, the full project can be seen here: https://github.com/williamholm/IBECS.  
+In order to keep this shorter sorting implementation and derivation of <code>Comp</code> and <code>ET</code> has been left out.  
 
 The three major questions I have for anyone able to review are:  
 - Is there a way to generate the tuple in <code>ETData</code> that does not require component types to be default constructable?
