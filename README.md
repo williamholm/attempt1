@@ -1,5 +1,5 @@
-Both Comp and ET have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.
-both Comp_ID and ET_ID are enums.
+Both Comp and ET (entity type) have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.
+Both of Comp_ID and ET_ID are enums, CompInfo and ETInfo are structs containing basic informations that is used to generate Comp and ET.
 ## Comp
 ```c++
 template<Comp_ID id, typename ComponentType = typename CompInfo<id>::type>
@@ -123,7 +123,7 @@ public:
 class SegSparseSet
 {
 private:
-	std::array<std::vector<Entity32Bit>, MAX_ET_ID> mEDS; //Entity Dense Set
+	std::array<std::vector<Entity32Bit>, MAX_ET_ID> mEDS; //Entity Dense Sets
 	std::array<std::vector<uint32_t>, MAX_ET_ID> mSparses;
 public:
 	inline bool entityInSet(Entity32Bit entity) noexcept { return (mSparses[entity.type()][entity.number()] != _UI32_MAX); }
