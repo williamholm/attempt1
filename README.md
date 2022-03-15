@@ -226,7 +226,6 @@ public:
 	TypeSortedSS() : mpSS(nullptr) {}
 };
 ```
-Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS?
 
 ```c++
 #include "ETData.hpp"
@@ -349,5 +348,6 @@ public:
 		addSegmentedSS();
 	};
 };
-Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS?
+
 ```
+Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS instead?
