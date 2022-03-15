@@ -111,7 +111,7 @@ public:
 	}
 };
 ```
-These two classes are core of the system, which together sort data so that mEDS[id] is a vector of all entities of the ET_ID, id and mCDS[id] which is a vector of the component data that runs parellel to mEDS[id]. 
+These two classes are core of the system, which together sort data so that in TypeSortedSS <code>mpSS->mEDS[id]</code> is a vector of all entities of the ET_ID, id and <code>mCDS[id]</code> which is a vector of the component data that runs parellel to <code>mpSS->mEDS[id]</code> . 
 ```c++
 #include <vector>
 #include "Entity.hpp"
