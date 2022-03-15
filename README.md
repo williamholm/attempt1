@@ -360,3 +360,65 @@ public:
 };
 
 ```
+## Example
+```c++
+#include "EntityManager.hpp"
+int main()
+{
+	EntityManager EM;
+	ET<PHYS_OBJ>::components; //provides array of components for reference
+	//struct containing components of Entity Type OBJ
+	ETData<PHYS_OBJ> physObjData;
+
+	physObjData.get<STATE>() = 0;
+	physObjData.get<POS3D>() = vec3(1, 2, 3);
+	physObjData.get<SPEED>() = 10;
+	physObjData.get<ORIENTATION>() = vec3(0,1,0);
+
+	Entity32Bit phyObjEntity = EM.addEntity(physObjData);
+
+	//add 1000 PHYS_OBJ
+	for (int i = 0; i < 1000; ++i)
+	{		
+		EM.addEntity(physObjData); //note no need to store return if Entity is anonymous 
+	}
+	
+	//exmaple to update position by velocity, with unsorted position
+	auto posIter = EM.begin<POS3D>(PHYS_OBJ);
+	auto oriIter = EM.begin<ORIENTATION>(PHYS_OBJ);
+	auto speedIter = EM.begin<SPEED>(PHYS_OBJ);
+	int size = EM.noOfET(PHYS_OBJ);
+
+	for (int i = 0; i < size; ++i)
+	{
+		posIter[i] += oriIter[i].scalarMulti(speedIter[i]);
+	}
+
+	//same example but if you have sorted positions
+	EM.sort<POS3D>(PHYS_OBJ);
+	Entity32Bit currentEntity;
+
+	for (int i = 0; i < size; ++i)
+	{
+		//this retrieves Entity that contiants speedIter[i], this is a slower way to access data so systems should avoid if possible.
+		currentEntity = EM.getEntity<SPEED>(PHYS_OBJ, i); 
+		//as POS3D is now a sorted component you cannot rely on posVecIter[i] belonging to same entity as ori/speedVecIter[i]
+		EM.getComp<POS3D>(currentEntity) += oriIter[i].scalarMulti(speedIter[i]);
+	}
+
+	//you can utilize inheritance to update all PHY_OBJ and all things that inherit from it 
+	for (const auto ET : ET<PHYS_OBJ>::incInheritors)
+	{
+		int size = EM.noOfET(ET);
+		posIter = EM.begin<POS3D>(ET);
+		oriIter = EM.begin<ORIENTATION>(ET);
+		speedIter = EM.begin<SPEED>(ET);
+
+		for (int i = 0; i < size; ++i)
+		{
+			currentEntity = EM.getEntity<SPEED>(ET, i);
+			EM.getComp<POS3D>(currentEntity) += oriIter[i].scalarMulti(speedIter[i]);
+		}
+	}
+}
+```
