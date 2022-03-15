@@ -123,6 +123,7 @@ public:
 These two classes together sort data so that in <code>TypeSortedSS</code> <code>mpSS->mEDS[id]</code> is a vector of all entities of the <code>ET_ID</code>, id and <code>mCDS[id]</code> which is a vector of the component data that runs parallel to <code>mpSS->mEDS[id]</code> . 
 ```c++
 #include <vector>
+#include <assert.h>
 #include "Entity.hpp"
 #include "Comp.hpp"
 
