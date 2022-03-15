@@ -1,4 +1,4 @@
-Below is the core of an entity component system I am working on to improve my c++, the full project can be seen here: https://github.com/williamholm/IBECS.  
+Below is the core of an entity component system I am working on to learn more c++, the full project can be seen here: https://github.com/williamholm/IBECS.  
 In order to keep this shorter sorting implementation and derivation of <code>Comp</code> and <code>ET</code> has been left out.  
 
 Any feedback is appreciated, three questions in particular are:  
