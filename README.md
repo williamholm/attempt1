@@ -41,6 +41,7 @@ struct ET
 ```
 
 ```c++
+#include <assert.h>
 #include "comp.hpp"
 
 template<ET_ID id, int compIndex = 0, int lastComp = ET<id>::noOfComponents - 1> //-1 for easier specialization
@@ -82,7 +83,7 @@ static constexpr uint32_t maxEntityType = 0xFFF;
 static constexpr uint32_t maxEntityNumber = 0xFFFFF;
 static constexpr uint32_t entityValueBits = 20;
 
-//options with this set up: max 1m entities, 4095 different entity types
+//with this set up: max 1m entities, 4095 entity types
 class Entity32Bit
 {
 private:
@@ -94,7 +95,7 @@ public:
 	}
 	constexpr uint32_t type() const noexcept
 	{
-		return (mEntity >> entityValueBits);// &maxEntityType);
+		return (mEntity >> entityValueBits);
 	}
 	constexpr void addType(uint32_t type) noexcept
 	{
