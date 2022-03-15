@@ -1,6 +1,8 @@
 Below is the core of an entity component system I am working on to learn more c++, the full project can be seen here: https://github.com/williamholm/IBECS.  
 In order to keep this shorter sorting implementation and derivation of <code>Comp</code> and <code>ET</code> has been left out.  
 
+The goal of this ECS is to end up with component data being sorted in such a way that for expressions that require multiple component vectors from the same entity have the same index. This is only broken if sets are sorted by different things but I believe there is no solution to that. Also the components of the same Entity Type, which are analoguos to structs/classes, must be stored in sequence.  
+
 Any feedback is appreciated, three questions in particular are:  
 - Is there a way to generate the tuple in <code>ETData</code> that does not require component types to be default constructable?
 - How can the sparse set implementation be improved?
