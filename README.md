@@ -39,7 +39,7 @@ struct ET
 	static constexpr std::array<int, MAX_COMP_ID> sparse = CompSparse(components);
 };
 ```
-ETData is a struct generated so that when you create an entity you arent left with a function that takes as many components as the ET has, though it might be better to always have new entities components be initialized to default and then have the user add value later.
+
 ```c++
 #include "comp.hpp"
 
