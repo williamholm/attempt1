@@ -1,6 +1,6 @@
-Both <code>Comp</code> and <code>ET</code> have a few features removed and have left derivation out as it is long and not pretty, added here as reference for rest of system.  
-Both of <code>Comp_ID</code> and <code>ET_ID</code> are enums, <code>CompInfo</code> and <code>ETInfo</code> are structs containing basic information that is used to generate <code>Comp</code> and <code>ET</code>.
-## Comp
+Below is the core of an entity component system I am working on, the full project can be seen here: https://github.com/williamholm/IBECS.  
+In order to keep this shorter almost all sorting implementation and derivation of <code>Comp</code> and <code>ET</code> has been left out.
+
 ```c++
 template<Comp_ID id, typename ComponentType = typename CompInfo<id>::type>
 struct Comp
@@ -14,7 +14,6 @@ struct Comp
 	static constexpr int sortGroup = positionalArray(sortArray(), uniqueElements<noOfUniqueElements(sortArray())>(sortArray()))[id];
 };
 ```
-## ET
 ```c++
 template<ET_ID id>
 struct ET
@@ -32,7 +31,7 @@ struct ET
 	static constexpr std::array<int, MAX_COMP_ID> sparse = CompSparse(components);
 };
 ```
-# ETData
+ETData is a struct generated so that when you create an entity you arent left with a function that takes as many components as the ET has, though it might be better to always have new entities components be initialized to default and then have the user add value later.
 ```c++
 #include "comp.hpp"
 
@@ -70,7 +69,6 @@ struct ETData
 	}
 };
 ```
-# Entity32Bit
 ```c++
 static constexpr uint32_t maxEntityType = 0xFFF;
 static constexpr uint32_t maxEntityNumber = 0xFFFFF;
@@ -113,8 +111,7 @@ public:
 	}
 };
 ```
-# Sparse Set, sorting has been removed as it would make this post to long
-
+These two classes are core of the system, which together sort data so that mEDS[id] is a vector of all entities of the ET_ID, id and mCDS[id] which is a vector of the component data that runs parellel to mEDS[id]. 
 ```c++
 #include <vector>
 #include "Entity.hpp"
@@ -230,7 +227,6 @@ public:
 };
 ```
 Does it make more sense to move all of TypeSortedSS into EntityManager, and replace mSparses with a tuple of mCDS?
-# EntityManager
 
 ```c++
 #include "ETData.hpp"
