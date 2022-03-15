@@ -284,7 +284,7 @@ public:
 	}
 private:
 	template<ET_ID id, int index = ET<id>::noOfComponents - 1>
-	void addData(Entity32Bit entity, ETData<id>& data)
+	void addData(Entity32Bit entity, ETData<id>& data)//go through each component in ET<id> and add data to the correct sparse
 	{
 		//if sorted by itself add entity to the correct sorted SharedSS
 		if constexpr (Comp<ET<id>::components[index]>::sortedBy == ET<id>::components[index])
@@ -299,7 +299,7 @@ private:
 	}
 
 	template<ET_ID id, int index = ET<id>::noOfComponents - 1>
-	void removeData(Entity32Bit entity)
+	void removeData(Entity32Bit entity)//go through each component in ET<id> and remove component from the correct sparse
 	{
 		std::get<ET<id>::components[index]>(mSparses).deleteComponent(entity);
 		//if sorted by itself delete entity from the correct sorted SharedSS
