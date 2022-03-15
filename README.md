@@ -118,6 +118,7 @@ public:
 # Sparse Set
 
 ```c++
+#include <vector>
 #include "Entity.hpp"
 #include "Comp.hpp"
 class SegSparseSet
